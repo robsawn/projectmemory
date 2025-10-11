@@ -110,6 +110,18 @@ InitTestScene*.unity*
 /Assets/Plugins/FMOD/Cache/*
 /Assets/Plugins/FMOD/Cache.meta
 
+# FMOD cache and temporary files (additional patterns)
+.cache/
+.restore/
+.unsaved/
+.user/
+*.fspro.user
+
+# Keep important FMOD project files
+!*.fspro
+!*.bank
+!*.assets
+
 # Ignore bank files in the StreamingAssets folder.
 /Assets/StreamingAssets/**/*.bank
 /Assets/StreamingAssets/**/*.bank.meta
@@ -128,3 +140,14 @@ fmod_editor.log
 !/Assets/Live2D/Cubism/Core/*
 !/Assets/Live2D/Cubism/Framework/*
 !/Assets/Live2D/Cubism/Rendering/*
+
+# Keep all Live2D model files explicitly
+!*.cmo3
+!*.can3
+!*.moc3
+!*.model3.json
+!*.moc3.bytes
+!*.motion3.json
+
+# Keep Live2D SDK DLLs
+!/Assets/Plugins/Live2D/**/*.dll
