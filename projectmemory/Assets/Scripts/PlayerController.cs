@@ -1,5 +1,6 @@
 //using System;
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
@@ -16,6 +17,9 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D playerRB;
     [SerializeField] private float moveSpeed = 10.0f;
+
+    private Dictionary<int, GameObject> nearbyInteractables = new Dictionary<int, GameObject>();
+    private bool nearInteractable = false;
 
     [Flags] public enum direction
     {
@@ -56,8 +60,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 input_move = moveAction.ReadValue<Vector2>() * Time.fixedDeltaTime;
-
+        Vector2 input_move = moveAction.ReadValue<Vector2>() * moveSpeed * Time.fixedDeltaTime;
+        e
         //add vector to player position?
         //playerRB.AddForce(input_move * Time.fixedDeltaTime);
         gameObject.transform.position += new Vector3(input_move.x, input_move.y, 0);
@@ -65,5 +69,41 @@ public class PlayerController : MonoBehaviour
         Vector2 currentVelocity = playerRB.linearVelocity ;
         worldViewLook = (input_move.x > 0 ? direction.RIGHT : (input_move.x < 0 ? direction.LEFT : direction.NONE)) | 
                         (input_move.y > 0 ? direction.UP    : (input_move.y < 0 ? direction.DOWN : direction.NONE));
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        var checkTest = other.gameObject.GetComponent<InteractableBase>();
+        if(checkTest!=null)
+        {
+            try
+            {
+                nearbyInteractables.Add(other.gameObject.GetInstanceID(), other.gameObject);
+                Debug.Log("[PlayerController]: detected nearby interactable. ID: {other.gameObject.GetInstanceID()}");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        var checkTest = other.gameObject.GetComponent<InteractableBase>();
+        if (checkTest != null && nearbyInteractables.ContainsKey(checkTest.GetInstanceID()))
+        {
+            try
+            {
+                int tempID = other.gameObject.GetInstanceID();
+                nearbyInteractables.Remove(tempID);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
