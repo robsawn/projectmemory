@@ -15,11 +15,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D playerRB;
-    [SerializeField] private float moveSpeed = 10.0f;
-
-    private Dictionary<int, GameObject> nearbyInteractables = new Dictionary<int, GameObject>();
-    private bool nearInteractable = false;
 
     [Flags] public enum direction
     {
@@ -32,59 +27,83 @@ public class PlayerController : MonoBehaviour
 
     public direction worldViewLook = 0;
 
+    [SerializeField] private Rigidbody2D playerRB;
+    [SerializeField] private float moveSpeed = 10.0f;
+
+    private Dictionary<int, GameObject> nearbyInteractables = new Dictionary<int, GameObject>();
+    private bool nearInteractable = false;
+
+    private Vector2 inputMove = Vector2.zero;
+ 
     InputAction moveAction;
+    InputAction interactAction;
 
     private void OnEnable()
     {
+        InputSystem.actions.Enable();
         //MARK: update as gamemaster is built
         moveSpeed = GameMaster._instance.player_moveSpeed;    
     }
 
 
     private void OnDisable()
-    {
-        
+    {   
+        //disable controls when player controller not longer active
+        InputSystem.actions.Disable();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
+        interactAction = InputSystem.actions.FindAction("Interact");
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        inputMove = moveAction.ReadValue<Vector2>() * moveSpeed * Time.fixedDeltaTime;
+
+        if(nearInteractable && interactAction.WasPressedThisFrame())
+        {
+            //activate interact on selected interactable
+            Debug.Log($"[PlayerController]: Attempting to interact");
+        }
+
+        //add vector to player position?
+        //playerRB.AddForce(input_move * Time.fixedDeltaTime);
+        gameObject.transform.position += new Vector3(inputMove.x, inputMove.y, 0);
+
+        Vector2 currentVelocity = playerRB.linearVelocity;
+        worldViewLook = (inputMove.x > 0 ? direction.RIGHT : (inputMove.x < 0 ? direction.LEFT : direction.NONE)) |
+                        (inputMove.y > 0 ? direction.UP : (inputMove.y < 0 ? direction.DOWN : direction.NONE));
     }
 
     private void FixedUpdate()
     {
-        Vector2 input_move = moveAction.ReadValue<Vector2>() * moveSpeed * Time.fixedDeltaTime;
-        e
-        //add vector to player position?
-        //playerRB.AddForce(input_move * Time.fixedDeltaTime);
-        gameObject.transform.position += new Vector3(input_move.x, input_move.y, 0);
 
-        Vector2 currentVelocity = playerRB.linearVelocity ;
-        worldViewLook = (input_move.x > 0 ? direction.RIGHT : (input_move.x < 0 ? direction.LEFT : direction.NONE)) | 
-                        (input_move.y > 0 ? direction.UP    : (input_move.y < 0 ? direction.DOWN : direction.NONE));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         var checkTest = other.gameObject.GetComponent<InteractableBase>();
-        if(checkTest!=null)
+        if (checkTest != null)
         {
-            try
+            int tempID = other.gameObject.GetInstanceID();
+            if (!nearbyInteractables.ContainsKey(tempID))
             {
-                nearbyInteractables.Add(other.gameObject.GetInstanceID(), other.gameObject);
-                Debug.Log("[PlayerController]: detected nearby interactable. ID: {other.gameObject.GetInstanceID()}");
-            }
-            catch (Exception)
-            {
+                try
+                {
+                    nearbyInteractables.Add(other.gameObject.GetInstanceID(), other.gameObject);
+                    nearInteractable = true;
+                    Debug.Log($"[PlayerController]: detected nearby interactable. ID: {other.gameObject.GetInstanceID()}");
+                }
+                catch (Exception)
+                {
 
-                throw;
+                    throw;
+                }
+                other.gameObject.GetInstanceID();
             }
         }
     }
@@ -98,6 +117,12 @@ public class PlayerController : MonoBehaviour
             {
                 int tempID = other.gameObject.GetInstanceID();
                 nearbyInteractables.Remove(tempID);
+                Debug.Log($"[PlayerController]:Removed interactable from list. ID: {tempID}");
+                if(nearbyInteractables.Count == 0)
+                {
+                    nearInteractable = false;
+                    Debug.Log($"[PlayerController]:No longer near interactables. nearInteractable: {nearInteractable}");
+                }
             }
             catch (Exception)
             {
