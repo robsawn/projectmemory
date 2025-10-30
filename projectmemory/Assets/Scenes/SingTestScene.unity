@@ -3587,7 +3587,7 @@ GameObject:
   - component: {fileID: 1945814812}
   - component: {fileID: 1945814811}
   - component: {fileID: 1945814810}
-  - component: {fileID: 1945814809}
+  - component: {fileID: 1945814813}
   m_Layer: 0
   m_Name: TestInteractable
   m_TagString: Untagged
@@ -3595,19 +3595,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1945814809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1945814808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7826bc5e44ff7264aaa37223f1da1e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
 --- !u!58 &1945814810
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3714,6 +3701,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1945814813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945814808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cef375ff84e234bb8237830940e3c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1005092860486470131
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3790,6 +3789,10 @@ PrefabInstance:
     - target: {fileID: 4389327034751988716, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
       propertyPath: m_Name
       value: TestPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329272237078327524, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
+      propertyPath: moveSpeed
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8804899072302361928, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
       propertyPath: m_Radius
