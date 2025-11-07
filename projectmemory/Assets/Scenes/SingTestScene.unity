@@ -3997,7 +3997,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2659426113944647206, guid: 0c302bbd140b4924385fe70f18592cf2, type: 3}
       propertyPath: player_moveSpeed
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4684489995488448128, guid: 0c302bbd140b4924385fe70f18592cf2, type: 3}
       propertyPath: m_Name
@@ -4059,10 +4059,6 @@ PrefabInstance:
     - target: {fileID: 881845051476825438, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
       propertyPath: m_SortingLayer
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1854148682786128211, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4389327034751988716, guid: cabbd0dbba23c704da40035d2d9e18df, type: 3}
       propertyPath: m_Name

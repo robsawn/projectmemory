@@ -52,7 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldViewLook: 0
   playerRB: {fileID: 264156780613091519}
-  moveSpeed: 2
+  moveSpeed: 1
   interactIconObject: {fileID: 7340935692785490349}
 --- !u!212 &881845051476825438
 SpriteRenderer:

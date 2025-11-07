@@ -7,12 +7,9 @@
 
 using UnityEngine;
 
-
 public class GameMaster : MonoBehaviour
 {
     public static GameMaster _instance { get; private set; } = null;
-
-    public float player_moveSpeed = 5.0f;
 
     public void Awake()
     {
@@ -26,5 +23,24 @@ public class GameMaster : MonoBehaviour
         }
     }
 
+    //Possible global fucntions
+    public void PauseGame()
+    {
 
+    }
+
+    public void FreezeOvermap()
+    {
+
+    }
+
+    public void TransitionToBattleScreen()
+    {
+
+    }
+
+    public void TransitionToBossScreen()
+    {
+
+    }
 }

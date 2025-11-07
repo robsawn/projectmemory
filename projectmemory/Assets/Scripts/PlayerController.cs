@@ -1,8 +1,6 @@
-//using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -19,11 +17,11 @@ public class PlayerController : MonoBehaviour
 
     [Flags] public enum direction
     {
-        NONE    = 0,
-        UP      = 1 << 1,
-        DOWN    = 1 << 2,
-        LEFT    = 1 << 3,
-        RIGHT   = 1 << 4,
+        NONE = 0,
+        UP = 1 << 1,
+        DOWN = 1 << 2,
+        LEFT = 1 << 3,
+        RIGHT = 1 << 4,
     }
 
     public direction worldViewLook = 0;
@@ -38,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private int interactableIndex = -1;
 
     private Vector2 inputMove = Vector2.zero;
+    private bool enableControls = true;
 
     InputAction moveAction;
     InputAction interactAction;
@@ -46,85 +45,86 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (playerControlMap != null)
-        {
-            playerControlMap.Enable();
-        }
-        //MARK: update as gamemaster is built
-        //Refreash skill/statuses/stats/equipped stuff
-        moveSpeed = GameMaster._instance.player_moveSpeed;
+
     }
 
 
     private void OnDisable()
     {
-        //disable controls when player controller not longer active        
-        playerControlMap.Disable();
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        moveAction = InputSystem.actions.FindAction("Move");
-        interactAction = InputSystem.actions.FindAction("Interact");
-        playerControlMap = InputSystem.actions.FindActionMap("Player");
-        prevAction = InputSystem.actions.FindAction("Previous");
-        nextAction = InputSystem.actions.FindAction("Next");
+        //playerControlMap = InputSystem.actions.FindActionMap("Player");
+        moveAction      = InputSystem.actions.FindAction("Move");
+        interactAction  = InputSystem.actions.FindAction("Interact");
+        prevAction      = InputSystem.actions.FindAction("Previous");
+        nextAction      = InputSystem.actions.FindAction("Next");
 
-        if (interactIconObject == null)
-        {
-            Debug.LogWarning("[PlayerController]: interact icon object not set.");
-        }
+        Debug.Assert(moveAction != null     , "[PlayerController]: No input action named 'Move'");
+        Debug.Assert(interactAction != null , "[PlayerController]: No input action named 'Interact'");
+        Debug.Assert(prevAction != null     , "[PlayerController]: No input action named 'Previous'");
+        Debug.Assert(nextAction != null     , "[PlayerController]: No input action named 'Next'");
+
+        Debug.Assert(interactIconObject!=null ,"[PlayerController]: interact icon object not set.");
+
+        //Temporary workaround to avoid repeated errors if inputactions were changed and this wasn't updated to match
+       if((moveAction == null) || (interactAction == null) || (prevAction == null) || (nextAction == null))
+       {
+            enableControls = false;
+            Debug.LogError("[PlayerController]: player input will be ignored until script is updated to match input action settings");
+       }
+        
+
         HighlightNearbyInteractable(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        #region actionKeys
-        if (nearInteractable && interactAction.WasPressedThisFrame())
+        if (enableControls)
         {
-            //activate interact on selected interactable
-            Debug.Log($"[PlayerController]: Attempting to interact");
-        }
-        else if (nearbyInteractables.Count > 0)
-        {
-            if (prevAction.WasPerformedThisFrame())
+            if (nearInteractable && interactAction.WasPressedThisFrame())
             {
-                Debug.Log($"[PlayerController]: Switch target to previous nearby interactable");
-                interactableIndex--;
-                if (interactableIndex < 0)
-                {
-                    interactableIndex = nearbyInteractables.Count - 1;
-                }
-                HighlightNearbyInteractable();
+                //activate interact on selected interactable
+                nearbyInteractables.ElementAt(interactableIndex).Value.GetComponent<IInteractable>().ActivateInteractable();
             }
-            else if (nextAction.WasPressedThisFrame())
+            else if (nearbyInteractables.Count > 0)
             {
-                Debug.Log($"[PlayerController]: Switch target to next nearby interactable");
-                interactableIndex++;
-                if (interactableIndex >= nearbyInteractables.Count)
+                if (prevAction.WasPressedThisFrame())
                 {
-                    interactableIndex = 0;
+                    Debug.Log($"[PlayerController]: Switch target to previous nearby interactable");
+                    interactableIndex--;
+                    if (interactableIndex < 0)
+                    {
+                        interactableIndex = nearbyInteractables.Count - 1;
+                    }
+                    HighlightNearbyInteractable();
                 }
-                HighlightNearbyInteractable();
+                else if (nextAction.WasPressedThisFrame())
+                {
+                    Debug.Log($"[PlayerController]: Switch target to next nearby interactable");
+                    interactableIndex++;
+                    if (interactableIndex >= nearbyInteractables.Count)
+                    {
+                        interactableIndex = 0;
+                    }
+                    HighlightNearbyInteractable();
+                }
             }
+
+            inputMove = moveAction.ReadValue<Vector2>() * moveSpeed * Time.fixedDeltaTime;
+
+            //add vector to player position?
+            //playerRB.AddForce(inputMove);
+            gameObject.transform.position += new Vector3(inputMove.x, inputMove.y, 0);
+
+            //Vector2 currentVelocity = playerRB.linearVelocity;
+            worldViewLook = (inputMove.x > 0 ? direction.RIGHT : (inputMove.x < 0 ? direction.LEFT : direction.NONE)) |
+                            (inputMove.y > 0 ? direction.UP : (inputMove.y < 0 ? direction.DOWN : direction.NONE)); 
         }
-        #endregion
-
-        #region movement
-        inputMove = moveAction.ReadValue<Vector2>() * moveSpeed * Time.fixedDeltaTime;
-
-        //add vector to player position?
-        //playerRB.AddForce(input_move * Time.fixedDeltaTime);
-        gameObject.transform.position += new Vector3(inputMove.x, inputMove.y, 0);
-
-        Vector2 currentVelocity = playerRB.linearVelocity;
-        worldViewLook = (inputMove.x > 0 ? direction.RIGHT : (inputMove.x < 0 ? direction.LEFT : direction.NONE)) |
-                        (inputMove.y > 0 ? direction.UP : (inputMove.y < 0 ? direction.DOWN : direction.NONE));
-
-        #endregion
     }
 
     private void FixedUpdate()
@@ -143,10 +143,9 @@ public class PlayerController : MonoBehaviour
                 //TODO: sort as it's added? sort by x position?
                 nearbyInteractables.Add(other.gameObject.GetInstanceID(), other.gameObject);
                 nearInteractable = true;
-                Debug.Log($"[PlayerController]: detected nearby interactable. ID: {other.gameObject.GetInstanceID()}");
+                Debug.Log($"[PlayerController]: Interactable added to list. ID: {other.gameObject.GetInstanceID()}");
                 if (nearbyInteractables.Count == 1)
                 {
-                    //Highlight nearest instead? Do we still check if it's the first one?
                     interactableIndex = 0;
                     HighlightNearbyInteractable();
                 }
@@ -163,8 +162,6 @@ public class PlayerController : MonoBehaviour
             if (nearbyInteractables.ContainsKey(tempID))
             {
                 nearbyInteractables.Remove(tempID);
-
-
 
                 if (nearbyInteractables.Count == 0)
                 {
@@ -207,8 +204,12 @@ public class PlayerController : MonoBehaviour
         }
         else if(interactableIndex >= nearbyInteractables.Count)
         {
-            //This must not happen
+            //This must not happen. Reset if it does
             Debug.LogError($"[PlayerController]: Attempted to highlighting interactable at: index: {interactableIndex} when nearbyInteractables only has {nearbyInteractables.Count} entries");
+            nearbyInteractables.Clear();
+            nearInteractable = false;
+            interactIconObject.transform.SetParent(gameObject.transform, false);
+            interactIconObject.SetActive(false);
         }
         else
         {
