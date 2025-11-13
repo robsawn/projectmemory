@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{ebc52f98-b660-4d58-8e75-bb3b82f9c292}">
+		<property name="assetPath">
+			<value>BGM/bgm_maintheme_fd2.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>227.14285416666667</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ec60fde0-ff2f-4e69-aa99-e90261c958c8}</destination>
+		</relationship>
+	</object>
+</objects>

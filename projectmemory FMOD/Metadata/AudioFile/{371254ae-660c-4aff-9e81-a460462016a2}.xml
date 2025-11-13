@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{371254ae-660c-4aff-9e81-a460462016a2}">
+		<property name="assetPath">
+			<value>UI/sfx_ui_back_fd1.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.32143749999999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ec60fde0-ff2f-4e69-aa99-e90261c958c8}</destination>
+		</relationship>
+	</object>
+</objects>
