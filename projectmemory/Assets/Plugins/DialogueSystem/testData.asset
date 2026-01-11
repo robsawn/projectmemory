@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d08d98aeacf1a4293366e8c7cd534a, type: 3}
+  m_Name: testData
+  m_EditorClassIdentifier: 
+  eventID: test_event
+  dialogueSpeakers:
+    speaker_L1:
+      speakerSide: 1
+      speakerName: Test Speaker
+      modifiableSide: 0
+    speaker_L2:
+      speakerSide: 2
+      speakerName: 
+      modifiableSide: 1
+    speaker_L3:
+      speakerSide: 3
+      speakerName: 
+      modifiableSide: 1
+    speaker_R1:
+      speakerSide: 4
+      speakerName: Test Listener
+      modifiableSide: 1
+    speaker_R2:
+      speakerSide: 5
+      speakerName: 
+      modifiableSide: 1
+    speaker_R3:
+      speakerSide: 6
+      speakerName: 
+      modifiableSide: 1
+  dialogue_entries:
+  - speaker: 1
+    speakerImage: {fileID: 0}
+    dialogueText: 
